@@ -29,6 +29,10 @@ export class Account extends BaseEntity{
     this.password = password;
   }
 
+  getId() : number{
+    return this.id;
+  }
+
   getPassword (): string {
     return this.password;
   }
@@ -36,5 +40,10 @@ export class Account extends BaseEntity{
   getUsername (): string {
     return this.username;
   }
+
+  setUser(user : User){
+    this.user = user;
+  }
+
 
 }

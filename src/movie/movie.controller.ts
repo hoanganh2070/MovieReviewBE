@@ -1,8 +1,9 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import {Controller, Get, Param, UseInterceptors} from "@nestjs/common";
 import { MovieService } from "./movie.service";
 import { Movie } from "./movie";
+import {CacheInterceptor} from "@nestjs/cache-manager";
 
-@Controller('movie')
+@Controller('/api/movie')
 export class MovieController {
   private movieService: MovieService;
 
@@ -12,11 +13,12 @@ export class MovieController {
   private upcomingList: Movie[];
 
 
-  constructor(movieService: MovieService) {
+  constructor( movieService: MovieService) {
     this.movieService = movieService;
   }
 
   @Get('/toprated')
+  @UseInterceptors(CacheInterceptor)
   async getTopratedMovies(): Promise<object> {
     this.topRatedMovies = [];
     let movies = await this.movieService.getTopRatedMovies();
@@ -27,14 +29,13 @@ export class MovieController {
     return this.topRatedMovies;
   }
 
+
   @Get('/trending')
+  @UseInterceptors(CacheInterceptor)
   async getPopularMovies(): Promise<object> {
 
     this.trendingList = [];
-    const start = Date.now();
     let movies = await this.movieService.getTrending();
-    const end = Date.now();
-    console.log(`Execution time: ${end - start} ms`);
     let list = movies['results'];
     for (let data of list) {
       this.trendingList.push(new Movie(data));
@@ -55,6 +56,7 @@ export class MovieController {
   }
 
   @Get('/upcoming')
+  @UseInterceptors(CacheInterceptor)
   async getUpcomingMovies(): Promise<object> {
     this.upcomingList = [];
     let movies = await this.movieService.getUpComingMovies();
@@ -69,10 +71,7 @@ export class MovieController {
   @Get('/:id')
   async getMovieById(@Param('id') id: number): Promise<object> {
     try{
-    const start = Date.now();
     let movie = await this.movieService.getMovieById(id);
-    const end = Date.now();
-    console.log(`Execution time: ${end - start} ms`);
       movie = new Movie(movie);
       return movie;
     }
