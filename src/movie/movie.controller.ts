@@ -17,6 +17,8 @@ export class MovieController {
     this.movieService = movieService;
   }
 
+
+   //get top rated movies endpoint
   @Get('/toprated')
   @UseInterceptors(CacheInterceptor)
   async getTopratedMovies(): Promise<object> {
@@ -29,7 +31,7 @@ export class MovieController {
     return this.topRatedMovies;
   }
 
-
+   //get trending movies endpoint
   @Get('/trending')
   @UseInterceptors(CacheInterceptor)
   async getPopularMovies(): Promise<object> {
@@ -43,18 +45,8 @@ export class MovieController {
     return this.trendingList;
   }
 
-  @Get("/demo")
-  async demo(): Promise<object[]> {
-    let moviesid =[14, 14277, 389,238, 278];
-    let movieList = [];
-    for (let id of moviesid) {
-     let movie = await this.movieService.getMovieById(id);
-     movieList.push(movie);
-    }
-    return movieList;
 
-  }
-
+    //get upcoming movies endpoint
   @Get('/upcoming')
   @UseInterceptors(CacheInterceptor)
   async getUpcomingMovies(): Promise<object> {
@@ -67,7 +59,7 @@ export class MovieController {
     return this.upcomingList;
   }
 
-
+    //get movie by id endpoint
   @Get('/:id')
   async getMovieById(@Param('id') id: number): Promise<object> {
     try{
@@ -81,6 +73,7 @@ export class MovieController {
 
   }
 
+        //get movie's videos endpoint
   @Get('/:id/video')
   async getVideoUrl(@Param('id') id: number): Promise<string> {
     let url = "https://www.youtube.com/embed/" + await this.movieService.getMovieVideos(id);
@@ -88,6 +81,7 @@ export class MovieController {
   }
 
 
+       //get movie's credits endpoint
   @Get('/:id/credits')
   async getMovieCredits(@Param('id') id : number) : Promise<object> {
       const start = Date.now();
@@ -97,7 +91,7 @@ export class MovieController {
       return credits;
   }
 
-
+       //get movie's images endpoint
   @Get('/:id/images')
   async getMovieImages(@Param('id') id : number) : Promise<object> {
      this.ImagesList = [];
@@ -108,6 +102,19 @@ export class MovieController {
 
     return this.ImagesList;
   }
+
+  @Get('/search/:query')
+    async searchMovie(@Param('query') query : string) : Promise<object> {
+        let movies = await this.movieService.searchMovie(query);
+        let list = movies['results'];
+        let searchList : Movie[] = [];
+        for (let data of list) {
+          if (data['poster_path'] != null)
+               searchList.push(new Movie(data));
+        }
+
+        return searchList;
+    }
 
 
 

@@ -1,6 +1,9 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from "../user/user";
 import { Account } from "../user/account";
+
+
+//Database configuration
 export const postgresConfig : TypeOrmModuleOptions = {
   type: 'postgres',
   host: '127.0.0.1',

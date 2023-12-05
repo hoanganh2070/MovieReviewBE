@@ -7,9 +7,13 @@ export class MovieService implements OnModuleInit{
 
   private static ACCESS_TOKEN : string;
 
-  onModuleInit(): any {
+
+  //Init your access token here
+  onModuleInit(): void {
     MovieService.ACCESS_TOKEN = process.env.TOKEN;
   }
+
+  //Get the top rated movies
   async getTopRatedMovies(): Promise<object> {
     return axios.get(
       "https://api.themoviedb.org/3/movie/top_rated",
@@ -24,6 +28,7 @@ export class MovieService implements OnModuleInit{
     });
   }
 
+    //Get the trending movies
   async getTrending(): Promise<object> {
     return axios.get(
       "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
@@ -37,6 +42,9 @@ export class MovieService implements OnModuleInit{
       return response.data;
     });
   }
+
+
+    //Get the movie by id
   async getMovieById(id: number): Promise<object> {
     const url = "https://api.themoviedb.org/3/movie/" + id;
     return axios.get(
@@ -51,6 +59,8 @@ export class MovieService implements OnModuleInit{
       return response.data;
     });
   }
+
+    //Get the movie's videos
   async getMovieVideos(id : number): Promise<string> {
     const url = "https://api.themoviedb.org/3/movie/" + id + "/videos";
     return axios.get(
@@ -70,6 +80,7 @@ export class MovieService implements OnModuleInit{
     });
 
   }
+    //Get the movie's credits
   async getMovieCredits(id : number): Promise<object> {
     const url = "https://api.themoviedb.org/3/movie/ "+ id + "/credits";
     return axios.get(
@@ -87,6 +98,8 @@ export class MovieService implements OnModuleInit{
   }
 
 
+
+    //Get the movie's images
   async getMovieImages(id : number): Promise<object> {
     const url = "https://api.themoviedb.org/3/movie/ "+ id + "/images";
     return axios.get(
@@ -103,6 +116,7 @@ export class MovieService implements OnModuleInit{
 
   }
 
+        //Get the upcoming movies
   async getUpComingMovies(): Promise<object> {
     return axios.get(
       "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
@@ -114,6 +128,21 @@ export class MovieService implements OnModuleInit{
       }
     ).then((response) => {
       return response.data;
+    });
+  }
+
+     //Search movie by title
+  async searchMovie(query : string) : Promise<object> {
+    return axios.get(
+        `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`,
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: MovieService.ACCESS_TOKEN
+          }
+        }
+    ).then((response) => {
+        return response.data;
     });
   }
 
