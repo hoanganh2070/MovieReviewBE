@@ -14,6 +14,9 @@ export class Account extends BaseEntity{
   @Column({name: "password"})
   private password : string;
 
+  @Column({name: "avatarurl",nullable: true})
+  private avatarurl : string
+
   @OneToOne(type => User,{cascade: true})
   @JoinColumn()
   private user :User;

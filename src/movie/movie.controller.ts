@@ -103,6 +103,7 @@ export class MovieController {
     return this.ImagesList;
   }
 
+   //search movies by name endpoint
   @Get('/search/:query')
     async searchMovie(@Param('query') query : string) : Promise<object> {
         let movies = await this.movieService.searchMovie(query);

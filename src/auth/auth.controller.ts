@@ -87,7 +87,7 @@ export class AuthController {
   @Get("/facebook/redirect")
   @UseGuards(AuthGuard('facebook'))
     async facebookAuthRedirect(@Res() res: any,@Req() req : any) : Promise<object> {
-      // res.redirect(`http://localhost:4869/?token=${req.user.accessToken}`);
+      res.redirect(`http://localhost:4869/?token=${req.user.accessToken}`);
       return req.user;
     }
 

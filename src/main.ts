@@ -13,10 +13,9 @@ async function bootstrap() {
   };
   app.use(cors(corsOptions));
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('API example')
+    .setDescription('My imdb API description')
     .setVersion('1.0')
-    .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

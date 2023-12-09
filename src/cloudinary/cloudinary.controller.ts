@@ -2,7 +2,7 @@ import {Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from "@nestjs/platform-express";
 import {CloudinaryService} from "./cloudinary.service";
 
-@Controller('cloudinary')
+@Controller('/api/cloudinary')
 export class CloudinaryController {
 
     private cloudinaryService : CloudinaryService;
