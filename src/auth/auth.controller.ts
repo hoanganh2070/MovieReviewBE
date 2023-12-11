@@ -60,7 +60,8 @@ export class AuthController {
   @Get("/google/redirect")
   @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Res() res : any,@Req() req : any) : Promise<void> {
-       const username = req.user['email'];
+       const email = req.user['email'].toString();
+       const username = email.substring(0,email.indexOf('@'));
        const user = await this.userService.getAccount(username);
        let token = this.authService.createToken(username);
        if(!user){
@@ -69,6 +70,7 @@ export class AuthController {
             let account : Account = new Account(username,
             req.user['accessToken'],user);
             await this.userService.saveAccount(account);
+            console.log(token);
        }
        res.redirect(`http://localhost:4869/?token=${token}`);
   }

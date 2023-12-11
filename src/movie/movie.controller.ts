@@ -6,7 +6,6 @@ import {CacheInterceptor} from "@nestjs/cache-manager";
 @Controller('/api/movie')
 export class MovieController {
   private movieService: MovieService;
-
   private topRatedMovies: Movie[];
   private trendingList: Movie[];
   private ImagesList : string[];
