@@ -70,9 +70,10 @@ export class AuthController {
             let account : Account = new Account(username,
             req.user['accessToken'],user);
             await this.userService.saveAccount(account);
-            console.log(token);
+
        }
-       res.redirect(`http://localhost:4869/?token=${token}`);
+       res.cookie('token',token);
+       res.redirect(`http://localhost:4869`);
   }
   //Google login
   @Get("/google/login")
