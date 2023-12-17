@@ -1,16 +1,24 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import * as process from "process";
 import axios from "axios";
+import {WatchlistRepository} from "./watchlist.repository";
+import {WatchListDto} from "./watchlistdto";
+import {FindOptionsWhere} from "typeorm";
 
 @Injectable()
 export class MovieService implements OnModuleInit{
 
   private static ACCESS_TOKEN : string;
+  private watchlistRepository: WatchlistRepository;
 
 
   //Init your access token here
   onModuleInit(): void {
     MovieService.ACCESS_TOKEN = process.env.TOKEN;
+  }
+
+  constructor(wathlistRepository: WatchlistRepository) {
+    this.watchlistRepository = wathlistRepository;
   }
 
   //Get the top rated movies
@@ -145,6 +153,36 @@ export class MovieService implements OnModuleInit{
         return response.data;
     });
   }
+
+
+  async  addMovieToWatchlist(movie : WatchListDto) : Promise<void> {
+      await this.watchlistRepository.save(movie);
+  }
+
+  async getMoviesFromWatchlist(movieId : number,accountId : number) : Promise<WatchListDto> {
+    const movie = await this.watchlistRepository
+        .createQueryBuilder("watchlist")
+        .leftJoinAndSelect("watchlist.account", "account")
+        .where("watchlist.movieId = :movieId", {movieId})
+        .andWhere("account.id = :accountId", {accountId})
+        .getOne();
+    return movie;
+  }
+
+  async checkIfMovieIsInWatchlist(movieId : number,accountId : number) : Promise<boolean> {
+       const movie = await this.getMoviesFromWatchlist(movieId,accountId)
+       return movie != null;
+
+  }
+
+  async removeMovieFromWatchlist(movieId : number,accountId : number) : Promise<void> {
+   let movie =  await this.getMoviesFromWatchlist(movieId,accountId);
+   await this.watchlistRepository.remove(movie);
+
+
+
+  }
+
 
 
 }

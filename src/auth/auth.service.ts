@@ -32,7 +32,7 @@ export class AuthService {
 
   createToken(username: string) {
     const payload = { username };
-    return this.jwtService.sign(payload , {expiresIn: '600s', secret: process.env.SECRET});
+    return this.jwtService.sign(payload , {expiresIn: '3600s', secret: process.env.SECRET});
   }
 
 

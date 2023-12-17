@@ -1,15 +1,16 @@
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { User } from "./user";
+import {WatchListDto} from "../movie/watchlistdto";
 
 
 @Entity()
 export class Account extends BaseEntity{
 
   @PrimaryGeneratedColumn({name: "id"})
-  private id: number;
+  public id: number;
 
   @Column({name: "username"})
-  private username :string;
+  private readonly username :string;
 
   @Column({name: "password"})
   private password : string;
@@ -20,6 +21,9 @@ export class Account extends BaseEntity{
   @OneToOne(type => User,{cascade: true})
   @JoinColumn()
   private user :User;
+
+  @OneToMany(type => WatchListDto,watchlist => watchlist.account)
+  private watchlist : Array<WatchListDto>;
 
   constructor(username: string, password: string, user: User) {
     super();

@@ -14,20 +14,22 @@ import {JwtStrategy} from "./jwt.strategy";
 import {UserRepository} from "../user/user.repository";
 import {GoogleStrategy} from "./google.strategy";
 import {FacebookStrategy} from "./facebook.strategy";
+import {WatchlistRepository} from "../movie/watchlist.repository";
+import {WatchListDto} from "../movie/watchlistdto";
 
 
 
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User,Account]),ConfigModule.forRoot(),
+  imports: [TypeOrmModule.forFeature([User,Account,WatchListDto]),ConfigModule.forRoot(),
     JwtModule.register({
     }),
     PassportModule.register({ defaultStrategy: 'jwt',session: false})],
   controllers: [AuthController],
   providers: [AuthService,UserService,AccountRepository,
     MovieService,JwtService,JwtStrategy,UserRepository,
-    GoogleStrategy,FacebookStrategy]
+    GoogleStrategy,FacebookStrategy,WatchlistRepository]
 })
 export class AuthModule {
 

@@ -1,10 +1,15 @@
-import {Controller, Get, Param, UseInterceptors} from "@nestjs/common";
-import { MovieService } from "./movie.service";
-import { Movie } from "./movie";
+import {Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UseInterceptors} from "@nestjs/common";
+import {MovieService} from "./movie.service";
+import {Movie} from "./movie";
 import {CacheInterceptor} from "@nestjs/cache-manager";
+import {getColorFromURL} from "color-thief-node";
+import {AuthGuard} from "@nestjs/passport";
+import {UserService} from "../user/user.service";
+import {WatchListDto} from "./watchlistdto";
 
 @Controller('/api/movie')
 export class MovieController {
+  private userService : UserService;
   private movieService: MovieService;
   private topRatedMovies: Movie[];
   private trendingList: Movie[];
@@ -12,8 +17,9 @@ export class MovieController {
   private upcomingList: Movie[];
 
 
-  constructor( movieService: MovieService) {
+  constructor(movieService: MovieService,userService : UserService) {
     this.movieService = movieService;
+    this.userService = userService;
   }
 
 
@@ -58,18 +64,44 @@ export class MovieController {
     return this.upcomingList;
   }
 
+  @Post('/watchlist')
+  @UseGuards(AuthGuard('jwt'))
+  async addMovieToWatchList(@Body() movie : any,@Req()  req: any) : Promise<void> {
+    let user = await this.userService.getAccount(req.user);
+    const moviedto = new WatchListDto(movie['movieId'],movie['movieName'],movie['moviePoster'],user);
+    await this.movieService.addMovieToWatchlist(moviedto);
+    return JSON.parse('{"message":"movie added successfully"}');
+  }
+
+  @Post('/watchlist/exist')
+  @UseGuards(AuthGuard('jwt'))
+    async checkMovieInWatchList(@Body() movieId : any,@Req()  req: any) : Promise<object> {
+        let user = await this.userService.getAccount(req.user);
+        let exist = await this.movieService.checkIfMovieIsInWatchlist(movieId['Id'],user.getId());
+        return JSON.parse('{"exist":'+exist+'}');
+    }
+
+    @Delete('/watchlist/delete')
+    @UseGuards(AuthGuard('jwt'))
+    async deleteMovieFromWatchList(@Body() movieId : any,@Req()  req: any) : Promise<void> {
+      let user = await this.userService.getAccount(req.user);
+       await this.movieService.removeMovieFromWatchlist(movieId['Id'],user.getId());
+       console.log("movie deleted");
+    }
+
     //get movie by id endpoint
   @Get('/:id')
   async getMovieById(@Param('id') id: number): Promise<object> {
     try{
     let movie = await this.movieService.getMovieById(id);
       movie = new Movie(movie);
+      movie['backdrop_path'] = await getColorFromURL(movie['poster_path']);
       return movie;
     }
     catch (e) {
+      console.log(e);
       throw new Error("Movie not found");
     }
-
   }
 
         //get movie's videos endpoint
@@ -98,7 +130,6 @@ export class MovieController {
     for (let url of credits['backdrops']) {
       this.ImagesList.push("https://www.themoviedb.org/t/p/w533_and_h300_bestv2" + url['file_path']);
     }
-
     return this.ImagesList;
   }
 
@@ -112,9 +143,14 @@ export class MovieController {
           if (data['poster_path'] != null)
                searchList.push(new Movie(data));
         }
-
         return searchList;
     }
+
+
+
+
+
+
 
 
 

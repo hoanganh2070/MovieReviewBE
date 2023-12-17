@@ -93,6 +93,4 @@ export class AuthController {
       res.redirect(`http://localhost:4869/?token=${req.user.accessToken}`);
       return req.user;
     }
-
-
 }
