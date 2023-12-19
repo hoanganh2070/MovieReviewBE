@@ -9,6 +9,8 @@ import {WatchlistRepository} from "./watchlist.repository";
 import {UserService} from "../user/user.service";
 import {AccountRepository} from "../user/account.repository";
 import {UserRepository} from "../user/user.repository";
+import {RateRepository} from "./rate.repository";
+import {MovieRepository} from "./movie.repository";
 
 
 @Module({
@@ -17,7 +19,7 @@ import {UserRepository} from "../user/user.repository";
     PassportModule.register({ defaultStrategy: 'jwt',session: false})],
   controllers: [MovieController],
   providers: [MovieService,JwtStrategy,WatchlistRepository,UserService,
-    AccountRepository,UserRepository],
+    AccountRepository,UserRepository,RateRepository,MovieRepository],
 })
 export class MovieModule {
 

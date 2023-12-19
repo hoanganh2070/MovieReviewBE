@@ -6,6 +6,7 @@ import {getColorFromURL} from "color-thief-node";
 import {AuthGuard} from "@nestjs/passport";
 import {UserService} from "../user/user.service";
 import {WatchListDto} from "./watchlistdto";
+import {Rate} from "./rate";
 
 @Controller('/api/movie')
 export class MovieController {
@@ -89,6 +90,28 @@ export class MovieController {
        console.log("movie deleted");
     }
 
+  @Post('/rate')
+  @UseGuards(AuthGuard('jwt'))
+  async rateMovie(@Body() movie : any,@Req()  req: any) : Promise<void> {
+    let user = await this.userService.getAccount(req.user);
+    const check = await this.movieService.getMovieRate(movie['movieId'],user.getId());
+    if (check == null){
+      const rate = new Rate(movie['movieId'],movie['rate'],user);
+      await this.movieService.RateMovie(rate);
+      return ;
+    }
+    await this.movieService.UpdateMovie(check,movie['rate']);
+    return JSON.parse('{"message":"movie rated successfully"}');
+  }
+
+  @Post('/rate/get')
+  @UseGuards(AuthGuard('jwt'))
+  async getrateMovie(@Body() movie : any,@Req()  req: any) : Promise<Rate> {
+    let user = await this.userService.getAccount(req.user);
+    const check = await this.movieService.getMovieRate(movie['movieId'],user.getId());
+    return check;
+  }
+
     //get movie by id endpoint
   @Get('/:id')
   async getMovieById(@Param('id') id: number): Promise<object> {
@@ -96,7 +119,8 @@ export class MovieController {
     let movie = await this.movieService.getMovieById(id);
       movie = new Movie(movie);
       movie['backdrop_path'] = await getColorFromURL(movie['poster_path']);
-      return movie;
+      let url = "https://www.youtube.com/embed/" + await this.movieService.getMovieVideos(id);
+      return {"movie":movie,"url":url};
     }
     catch (e) {
       console.log(e);
@@ -104,12 +128,8 @@ export class MovieController {
     }
   }
 
-        //get movie's videos endpoint
-  @Get('/:id/video')
-  async getVideoUrl(@Param('id') id: number): Promise<string> {
-    let url = "https://www.youtube.com/embed/" + await this.movieService.getMovieVideos(id);
-    return `{"url": "${url}"}`;
-  }
+
+
 
 
        //get movie's credits endpoint

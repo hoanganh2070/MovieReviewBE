@@ -3,13 +3,15 @@ import * as process from "process";
 import axios from "axios";
 import {WatchlistRepository} from "./watchlist.repository";
 import {WatchListDto} from "./watchlistdto";
-import {FindOptionsWhere} from "typeorm";
+import {RateRepository} from "./rate.repository";
+import {Rate} from "./rate";
 
 @Injectable()
 export class MovieService implements OnModuleInit{
 
   private static ACCESS_TOKEN : string;
   private watchlistRepository: WatchlistRepository;
+  private rateRepository: RateRepository;
 
 
   //Init your access token here
@@ -17,8 +19,9 @@ export class MovieService implements OnModuleInit{
     MovieService.ACCESS_TOKEN = process.env.TOKEN;
   }
 
-  constructor(wathlistRepository: WatchlistRepository) {
+  constructor(wathlistRepository: WatchlistRepository,rateRepository: RateRepository) {
     this.watchlistRepository = wathlistRepository;
+    this.rateRepository = rateRepository;
   }
 
   //Get the top rated movies
@@ -179,9 +182,31 @@ export class MovieService implements OnModuleInit{
    let movie =  await this.getMoviesFromWatchlist(movieId,accountId);
    await this.watchlistRepository.remove(movie);
 
-
-
   }
+  async  RateMovie(movie : Rate) : Promise<void> {
+    await this.rateRepository.save(movie);
+  }
+
+  async UpdateMovie(movie: Rate, point: number): Promise<void> {
+    await this.rateRepository
+        .createQueryBuilder("rate")
+        .leftJoinAndSelect("rate.account", "account")
+        .update(Rate)
+        .set({ rate: point })
+        .where('movieId = :movieId', { movieId: movie.movieId })
+        .andWhere('accountId = :accountId', { accountId: movie.account.id })
+        .execute();
+  }
+
+    async getMovieRate(movieId : number,accountId : number) : Promise<Rate> {
+        const movie = await this.rateRepository
+            .createQueryBuilder("rate")
+            .leftJoinAndSelect("rate.account", "account")
+            .where("rate.movieId = :movieId", {movieId})
+            .andWhere("account.id = :accountId", {accountId})
+            .getOne();
+        return movie;
+    }
 
 
 

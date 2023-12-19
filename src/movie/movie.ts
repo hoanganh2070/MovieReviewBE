@@ -1,5 +1,8 @@
+import {BaseEntity, Entity, PrimaryGeneratedColumn} from "typeorm";
 
-export class Movie{
+@Entity()
+export class Movie extends BaseEntity{
+  @PrimaryGeneratedColumn({name: "id"})
   private id: number;
   private title: string;
   private original_title: string;
@@ -11,6 +14,7 @@ export class Movie{
   private video : number;
 
   constructor(data : object) {
+    super();
     this.id = data['id'];
     this.title = data['title'];
     this.original_title = data['original_title'];

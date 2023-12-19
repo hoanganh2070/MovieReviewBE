@@ -1,6 +1,7 @@
 import {BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { User } from "./user";
 import {WatchListDto} from "../movie/watchlistdto";
+import {Rate} from "../movie/rate";
 
 
 @Entity()
@@ -24,6 +25,9 @@ export class Account extends BaseEntity{
 
   @OneToMany(type => WatchListDto,watchlist => watchlist.account)
   private watchlist : Array<WatchListDto>;
+
+  @OneToMany(type => Rate,rate => rate.account)
+  private ratelist : Array<Rate>;
 
   constructor(username: string, password: string, user: User) {
     super();

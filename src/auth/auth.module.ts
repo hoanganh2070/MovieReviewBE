@@ -16,20 +16,25 @@ import {GoogleStrategy} from "./google.strategy";
 import {FacebookStrategy} from "./facebook.strategy";
 import {WatchlistRepository} from "../movie/watchlist.repository";
 import {WatchListDto} from "../movie/watchlistdto";
+import {Rate} from "../movie/rate";
+import {RateRepository} from "../movie/rate.repository";
+import {MovieRepository} from "../movie/movie.repository";
 
 
 
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User,Account,WatchListDto]),ConfigModule.forRoot(),
+  imports: [TypeOrmModule.forFeature([User,Account,WatchListDto,Rate]),ConfigModule.forRoot(),
     JwtModule.register({
     }),
     PassportModule.register({ defaultStrategy: 'jwt',session: false})],
   controllers: [AuthController],
   providers: [AuthService,UserService,AccountRepository,
     MovieService,JwtService,JwtStrategy,UserRepository,
-    GoogleStrategy,FacebookStrategy,WatchlistRepository]
+    GoogleStrategy,FacebookStrategy,WatchlistRepository,
+    RateRepository,MovieRepository
+  ]
 })
 export class AuthModule {
 
