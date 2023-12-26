@@ -8,6 +8,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import {CacheModule} from "@nestjs/cache-manager";
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { OpenaiModule } from './openai/openai.module';
 
 
 @Module({
@@ -17,7 +18,8 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
       CacheModule.register(),
-      CloudinaryModule
+      CloudinaryModule,
+      OpenaiModule
     ],
 })
 export class AppModule {
