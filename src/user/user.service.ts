@@ -29,9 +29,11 @@ export class UserService {
   async getAccount(username: string): Promise<Account> {
     return this.accountRepository.findOne({
       where: {
-        username: username
-      } as FindOptionsWhere<Account>
-    }).then((account) => {
+        username: username,
+      } as FindOptionsWhere<Account>,
+      relations: ["user"]
+    })
+        .then((account) => {
       return account;
     })
   }
@@ -44,6 +46,13 @@ export class UserService {
     }).then((user) => {
       return user;
     })
+  }
+
+  async updateavatar(username: string, avatarurl: string): Promise<void> {
+    const updateData = { avatarurl: avatarurl };
+
+    await this.accountRepository.update({ username: username } as FindOptionsWhere<Account>, updateData);
+
   }
 
 

@@ -17,7 +17,7 @@ export class Account extends BaseEntity{
   private password : string;
 
   @Column({name: "avatarurl",nullable: true})
-  private avatarurl : string
+  public avatarurl : string
 
   @OneToOne(type => User,{cascade: true})
   @JoinColumn()
@@ -29,10 +29,11 @@ export class Account extends BaseEntity{
   @OneToMany(type => Rate,rate => rate.account)
   private ratelist : Array<Rate>;
 
-  constructor(username: string, password: string, user: User) {
+  constructor(username: string, password: string,avatar : string, user: User) {
     super();
     this.username = username;
     this.password = password;
+    this.avatarurl = avatar;
     this.user = user;
   }
 

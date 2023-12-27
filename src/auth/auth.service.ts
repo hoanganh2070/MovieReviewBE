@@ -18,14 +18,17 @@ export class AuthService {
     this.jwtService = jwtService;
   }
 
-  async authenticateAccount(username: string, password: string): Promise<boolean> {
+  async authenticateAccount(username: string, password: string): Promise<any> {
     let account = this.accountRepository.findOne({
       where: {
         username: Equal(username)
       } as FindOptionsWhere<Account>
     }).then((account) => {
       if (account == null) return false;
-      return bcrypt.compare(password, account.getPassword());
+      if (bcrypt.compare(password, account.getPassword())){
+         return account;
+      };
+      return false;
     });
     return account;
   }

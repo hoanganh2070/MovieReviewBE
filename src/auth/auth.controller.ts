@@ -26,7 +26,7 @@ export class AuthController {
     let user : User = new User(body['user']['firstname'],
       body['user']['lastname'],body['user']['email']);
     let account : Account = new Account(body['account']['username'],
-      body['account']['password'],user);
+      body['account']['password'],null,user);
     await this.userService.saveAccount(account);
     return JSON.parse('{"message":"account created successfully"}');
   }
@@ -38,8 +38,9 @@ export class AuthController {
       if (authenticated) {
         const payload  = String(body['username']);
         const accessToken =  this.authService.createToken(payload);
-        return JSON.parse('{"authenticated":true,"accessToken":"' + accessToken + '"}')
-      } else {
+        return {authenticated: true, accessToken: accessToken,avatar:authenticated['avatarurl']};
+      }
+      else {
         console.log('Unauthenticated');
         return JSON.parse('{"authenticated":false}')
       }
@@ -50,9 +51,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get("/profile")
   async getUser(@Req() req : any) : Promise<Account>{
-      console.log("authenticated");
       let user = await this.userService.getAccount(req.user);
-      user.setUser(await this.userService.getUser(user.getId()));
       return user;
   }
 
@@ -68,11 +67,13 @@ export class AuthController {
             let user : User = new User(req.user['firstName'],
             req.user['lastName'],req.user['email']);
             let account : Account = new Account(username,
-            req.user['accessToken'],user);
+            req.user['accessToken'],req.user['picture'],user);
             await this.userService.saveAccount(account);
 
        }
        res.cookie('token',token);
+      const encodedImageUrl = btoa(req.user['picture']);
+      res.cookie('avatar',encodedImageUrl);
        res.redirect(`http://localhost:4869`);
   }
   //Google login
