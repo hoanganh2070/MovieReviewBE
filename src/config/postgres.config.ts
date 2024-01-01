@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from "../user/user";
 import { Account } from "../user/account";
-import {WatchListDto} from "../movie/watchlistdto";
+import {WatchList} from "../movie/watchlist";
 import {Rate} from "../movie/rate";
 
 
@@ -13,6 +13,6 @@ export const postgresConfig : TypeOrmModuleOptions = {
   username: 'postgres',
   password: 'titbandau',
   database: 'imdb',
-  entities: [User, Account,WatchListDto,Rate],
+  entities: [User, Account,WatchList,Rate],
   synchronize: true,
 }

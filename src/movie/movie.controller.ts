@@ -5,7 +5,7 @@ import {CacheInterceptor} from "@nestjs/cache-manager";
 import {getColorFromURL} from "color-thief-node";
 import {AuthGuard} from "@nestjs/passport";
 import {UserService} from "../user/user.service";
-import {WatchListDto} from "./watchlistdto";
+import {WatchList} from "./watchlist";
 import {Rate} from "./rate";
 
 @Controller('/api/movie')
@@ -64,12 +64,18 @@ export class MovieController {
     }
     return this.upcomingList;
   }
+  @Get('/watchlist')
+  @UseGuards(AuthGuard('jwt'))
+  async getWatchList(@Req()  req: any) : Promise<object> {
+    let user = await this.userService.getAccount(req.user);
+    return await this.movieService.getWatchlist(user.getId());
+  }
 
   @Post('/watchlist')
   @UseGuards(AuthGuard('jwt'))
   async addMovieToWatchList(@Body() movie : any,@Req()  req: any) : Promise<void> {
     let user = await this.userService.getAccount(req.user);
-    const moviedto = new WatchListDto(movie['movieId'],movie['movieName'],movie['moviePoster'],user);
+    const moviedto = new WatchList(movie['movieId'],movie['movieName'],movie['moviePoster'],user);
     await this.movieService.addMovieToWatchlist(moviedto);
     return JSON.parse('{"message":"movie added successfully"}');
   }

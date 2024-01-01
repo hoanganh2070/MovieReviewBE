@@ -1,6 +1,6 @@
 import {BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { User } from "./user";
-import {WatchListDto} from "../movie/watchlistdto";
+import {WatchList} from "../movie/watchlist";
 import {Rate} from "../movie/rate";
 
 
@@ -23,8 +23,8 @@ export class Account extends BaseEntity{
   @JoinColumn()
   private user :User;
 
-  @OneToMany(type => WatchListDto,watchlist => watchlist.account)
-  private watchlist : Array<WatchListDto>;
+  @OneToMany(type => WatchList,watchlist => watchlist.account)
+  private watchlist : Array<WatchList>;
 
   @OneToMany(type => Rate,rate => rate.account)
   private ratelist : Array<Rate>;

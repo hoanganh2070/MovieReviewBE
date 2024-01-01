@@ -1,13 +1,13 @@
 import {DataSource, Repository} from "typeorm";
-import {WatchListDto} from "./watchlistdto";
+import {WatchList} from "./watchlist";
 import {Injectable} from "@nestjs/common";
 
 
 @Injectable()
-export class WatchlistRepository extends Repository<WatchListDto>{
+export class WatchlistRepository extends Repository<WatchList>{
     private datasource : DataSource;
 
     constructor(datasource: DataSource) {
-        super(WatchListDto,datasource.createEntityManager());
+        super(WatchList,datasource.createEntityManager());
     }
 }

@@ -2,7 +2,7 @@ import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColum
 import {Account} from "../user/account";
 
 @Entity("watchlist")
-export class WatchListDto extends BaseEntity{
+export class WatchList extends BaseEntity{
 
     @PrimaryGeneratedColumn({name: "id"})
     private id : number;

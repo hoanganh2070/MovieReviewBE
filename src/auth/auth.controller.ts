@@ -1,10 +1,9 @@
 import {Body, Controller, Get, Post, Req, Res, UseGuards} from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { UserService } from "../user/user.service";
-import { User } from "../user/user";
-import { Account } from "../user/account";
+import {AuthService} from "./auth.service";
+import {UserService} from "../user/user.service";
+import {User} from "../user/user";
+import {Account} from "../user/account";
 import {AuthGuard} from "@nestjs/passport";
-
 
 
 @Controller("/api/auth")
@@ -51,8 +50,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get("/profile")
   async getUser(@Req() req : any) : Promise<Account>{
-      let user = await this.userService.getAccount(req.user);
-      return user;
+      return await this.userService.getAccount(req.user);
   }
 
   //Google login
@@ -69,12 +67,20 @@ export class AuthController {
             let account : Account = new Account(username,
             req.user['accessToken'],req.user['picture'],user);
             await this.userService.saveAccount(account);
+            res.cookie('token',token);
+            const encodedImageUrl = btoa(req.user['picture']);
+            res.cookie('avatar',encodedImageUrl);
+            res.redirect(`http://localhost:4869`);
+            return ;
 
        }
-       res.cookie('token',token);
-      const encodedImageUrl = btoa(req.user['picture']);
-      res.cookie('avatar',encodedImageUrl);
-       res.redirect(`http://localhost:4869`);
+         else{
+           res.cookie('token',token);
+           const encodedImageUrl = btoa(user.avatarurl.toString());
+           res.cookie('avatar',encodedImageUrl);
+           res.redirect(`http://localhost:4869`);
+           return ;
+         }
   }
   //Google login
   @Get("/google/login")

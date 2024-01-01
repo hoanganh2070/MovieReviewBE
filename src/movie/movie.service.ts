@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from "@nestjs/common";
 import * as process from "process";
 import axios from "axios";
 import {WatchlistRepository} from "./watchlist.repository";
-import {WatchListDto} from "./watchlistdto";
+import {WatchList} from "./watchlist";
 import {RateRepository} from "./rate.repository";
 import {Rate} from "./rate";
 
@@ -158,11 +158,11 @@ export class MovieService implements OnModuleInit{
   }
 
 
-  async  addMovieToWatchlist(movie : WatchListDto) : Promise<void> {
+  async  addMovieToWatchlist(movie : WatchList) : Promise<void> {
       await this.watchlistRepository.save(movie);
   }
 
-  async getMoviesFromWatchlist(movieId : number,accountId : number) : Promise<WatchListDto> {
+  async getMoviesFromWatchlist(movieId : number,accountId : number) : Promise<WatchList> {
     const movie = await this.watchlistRepository
         .createQueryBuilder("watchlist")
         .leftJoinAndSelect("watchlist.account", "account")
@@ -206,6 +206,17 @@ export class MovieService implements OnModuleInit{
             .andWhere("account.id = :accountId", {accountId})
             .getOne();
         return movie;
+    }
+
+    async getWatchlist(accountId : number) : Promise<Array<WatchList>> {
+        const movies = await this.watchlistRepository
+            .createQueryBuilder("watchlist")
+            .leftJoin("watchlist.account", "account")
+            .where("account.id = :accountId", { accountId })
+            .addSelect(["watchlist.id", "watchlist.movieId", "watchlist.movieName", "watchlist.moviePoster"])
+            .getMany();
+        return movies;
+
     }
 
 
