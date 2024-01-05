@@ -7,6 +7,8 @@ import {AuthGuard} from "@nestjs/passport";
 import {UserService} from "../user/user.service";
 import {WatchList} from "./watchlist";
 import {Rate} from "./rate";
+import {MovieDto} from "../dto/moviedto";
+import {StaffDto} from "../dto/staffdto";
 
 @Controller('/api/movie')
 export class MovieController {
@@ -27,7 +29,7 @@ export class MovieController {
    //get top rated movies endpoint
   @Get('/toprated')
   @UseInterceptors(CacheInterceptor)
-  async getTopratedMovies(): Promise<object> {
+  async getTopratedMovies(): Promise<Movie[]> {
     this.topRatedMovies = [];
     let movies = await this.movieService.getTopRatedMovies();
     let list = movies['results'];
@@ -40,7 +42,7 @@ export class MovieController {
    //get trending movies endpoint
   @Get('/trending')
   @UseInterceptors(CacheInterceptor)
-  async getPopularMovies(): Promise<object> {
+  async getPopularMovies(): Promise<Movie[]> {
 
     this.trendingList = [];
     let movies = await this.movieService.getTrending();
@@ -55,7 +57,7 @@ export class MovieController {
     //get upcoming movies endpoint
   @Get('/upcoming')
   @UseInterceptors(CacheInterceptor)
-  async getUpcomingMovies(): Promise<object> {
+  async getUpcomingMovies(): Promise<Movie[]> {
     this.upcomingList = [];
     let movies = await this.movieService.getUpComingMovies();
     let list = movies['results'];
@@ -134,18 +136,35 @@ export class MovieController {
     }
   }
 
+  @Get('/:id/recommendations')
+  async getMovieRecommendations(@Param('id') id : number) : Promise<MovieDto[]> {
+    let recommendationsList : MovieDto[] = [];
+    let red = await this.movieService.getRecommendations(id);
+    for (let data of red['results']) {
+      if (data['poster_path'] != null) {
+        let movie = new MovieDto(data);
+        recommendationsList.push(movie);
+      }
+    }
+    return  recommendationsList;
 
 
+  }
 
 
        //get movie's credits endpoint
   @Get('/:id/credits')
   async getMovieCredits(@Param('id') id : number) : Promise<object> {
-      const start = Date.now();
-      let credits = this.movieService.getMovieCredits(id);
-      const end =  Date.now();
-      console.log(`Execution time: ${end - start} ms`);
-      return credits;
+      let staffs : StaffDto[] = [];
+      let credits = await this.movieService.getMovieCredits(id);
+      for (let data of credits['cast']) {
+        if (data['profile_path'] != null) {
+          let staff = new StaffDto(data);
+          staffs.push(staff);
+        }
+      }
+
+      return staffs;
   }
 
        //get movie's images endpoint
