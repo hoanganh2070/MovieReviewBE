@@ -136,20 +136,6 @@ export class MovieController {
     }
   }
 
-  @Get('/:id/recommendations')
-  async getMovieRecommendations(@Param('id') id : number) : Promise<MovieDto[]> {
-    let recommendationsList : MovieDto[] = [];
-    let red = await this.movieService.getRecommendations(id);
-    for (let data of red['results']) {
-      if (data['poster_path'] != null) {
-        let movie = new MovieDto(data);
-        recommendationsList.push(movie);
-      }
-    }
-    return  recommendationsList;
-
-
-  }
 
 
        //get movie's credits endpoint

@@ -127,20 +127,7 @@ export class MovieService implements OnModuleInit{
 
   }
 
-    async getRecommendations(id : number): Promise<object> {
-        const url = "https://api.themoviedb.org/3/movie/"+ id+ "/recommendations"
-        return axios.get(
-            url,
-            {
-                headers: {
-                    accept: "application/json",
-                    Authorization: MovieService.ACCESS_TOKEN
-                }
-            }
-        ).then((response) => {
-            return response.data;
-        });
-    }
+
 
         //Get the upcoming movies
   async getUpComingMovies(): Promise<object> {
