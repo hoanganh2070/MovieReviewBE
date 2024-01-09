@@ -4,7 +4,7 @@ import { Equal, FindOptionsWhere } from "typeorm";
 import { Account } from "../user/account";
 import * as bcrypt from 'bcrypt';
 import {JwtService} from "@nestjs/jwt";
-
+import * as process  from "process";
 
 
 @Injectable()
@@ -35,7 +35,7 @@ export class AuthService {
 
   createToken(username: string) {
     const payload = { username };
-    return this.jwtService.sign(payload , {expiresIn: '3600s', secret: process.env.SECRET});
+    return this.jwtService.sign(payload , {expiresIn: '86400s', secret: process.env.SECRET});
   }
 
 

@@ -22,8 +22,9 @@ export class AuthController {
   //Sign up
   @Post('/signup')
   async createAccount(@Body() body : object) : Promise<string> {
-    let user : User = new User(body['user']['firstname'],
-      body['user']['lastname'],body['user']['email']);
+    let user : User = new User(body['user']['firstName'],
+      body['user']['lastName'],body['user']['email']);
+    console.log(user);
     let account : Account = new Account(body['account']['username'],
       body['account']['password'],null,user);
     await this.userService.saveAccount(account);
