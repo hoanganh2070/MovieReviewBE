@@ -7,10 +7,11 @@ import {AuthGuard} from "@nestjs/passport";
 import {UserService} from "../user/user.service";
 import {WatchList} from "./watchlist";
 import {Rate} from "./rate";
-import {MovieDto} from "../dto/moviedto";
 import {StaffDto} from "../dto/staffdto";
+import {ApiTags} from "@nestjs/swagger";
 
 @Controller('/api/movie')
+@ApiTags('Movie')
 export class MovieController {
   private userService : UserService;
   private movieService: MovieService;

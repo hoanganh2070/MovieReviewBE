@@ -1,11 +1,12 @@
 import {Controller, Post, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from "@nestjs/platform-express";
 import {CloudinaryService} from "./cloudinary.service";
-import {ApiBody, ApiConsumes} from "@nestjs/swagger";
+import {ApiBody, ApiConsumes, ApiTags} from "@nestjs/swagger";
 import {UserService} from "../user/user.service";
 import {AuthGuard} from "@nestjs/passport";
 
 @Controller('/api/cloudinary')
+@ApiTags('Cloudinary')
 export class CloudinaryController {
 
     private cloudinaryService : CloudinaryService;

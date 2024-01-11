@@ -4,9 +4,11 @@ import {UserService} from "../user/user.service";
 import {User} from "../user/user";
 import {Account} from "../user/account";
 import {AuthGuard} from "@nestjs/passport";
+import {ApiTags} from "@nestjs/swagger";
 
 
 @Controller("/api/auth")
+@ApiTags('Auth')
 export class AuthController {
 
   private authService : AuthService;
