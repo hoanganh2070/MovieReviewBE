@@ -7,6 +7,10 @@
 
 <h1>Project is in the process of development</h1>
 
+## Frontend of this prorject 
+
+<h6>https://github.com/Mhoanganh207/IMDb-FakeFE<h6>
+
 ## Installation
 
 ```bash
