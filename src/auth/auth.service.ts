@@ -33,9 +33,9 @@ export class AuthService {
     return account;
   }
 
-  createToken(username: string) {
+  createToken(username: string,expiredTime : string) {
     const payload = { username };
-    return this.jwtService.sign(payload , {expiresIn: '86400s', secret: process.env.SECRET});
+    return this.jwtService.sign(payload , {expiresIn: expiredTime, secret: process.env.SECRET});
   }
 
 

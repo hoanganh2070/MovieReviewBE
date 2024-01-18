@@ -24,6 +24,9 @@ export class OpenaiGateway{
         stream.on('content', (res) => {
             this.server.emit('chatbot',res);
         });
+        if (await stream.finalChatCompletion()){
+            this.server.emit('chatbot','\0');
+        }
     }
 
 }

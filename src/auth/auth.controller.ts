@@ -39,8 +39,9 @@ export class AuthController {
     return await this.authService.authenticateAccount(body['username'], body['password']).then((authenticated) => {
       if (authenticated) {
         const payload  = String(body['username']);
-        const accessToken =  this.authService.createToken(payload);
-        return {authenticated: true, accessToken: accessToken,avatar:authenticated['avatarurl']};
+        const accessToken =  this.authService.createToken(payload,'20m');
+        const refreshToken = this.authService.createToken(payload,'1d');
+        return {authenticated: true, accessToken: accessToken,refreshToken : refreshToken,avatar:authenticated['avatarurl']};
       }
       else {
         console.log('Unauthenticated');
@@ -56,6 +57,17 @@ export class AuthController {
       return await this.userService.getAccount(req.user);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get("/refreshToken")
+  async refreshToken(@Req() req : any) : Promise<object> {
+      console.log('refresh token');
+      const token = this.authService.createToken(req.user,'20m');
+      const refreshToken = this.authService.createToken(req.user,'1d');
+
+        return {accessToken: token,refreshToken : refreshToken};
+
+  }
+
   //Google login
   @Get("/google/redirect")
   @UseGuards(AuthGuard('google'))
@@ -63,24 +75,23 @@ export class AuthController {
        const email = req.user['email'].toString();
        const username = email.substring(0,email.indexOf('@'));
        const user = await this.userService.getAccount(username);
-       let token = this.authService.createToken(username);
+       let token = this.authService.createToken(username,'20m');
+       let refreshToken = this.authService.createToken(username,'1d');
        if(!user){
-            let user : User = new User(req.user['firstName'],
-            req.user['lastName'],req.user['email']);
-            let account : Account = new Account(username,
-            req.user['accessToken'],req.user['picture'],user);
+            let user : User = new User(req.user['firstName'], req.user['lastName'],req.user['email']);
+            let account : Account = new Account(username, req.user['accessToken'],req.user['picture'],user);
             await this.userService.saveAccount(account);
             res.cookie('token',token);
-            const encodedImageUrl = btoa(req.user['picture']);
-            res.cookie('avatar',encodedImageUrl);
+            res.cookie('refreshToken',refreshToken);
+            res.cookie('avatar', btoa(req.user['picture']));
             res.redirect(`http://localhost:4869`);
             return ;
 
        }
          else{
            res.cookie('token',token);
-           const encodedImageUrl = btoa(user.avatarurl.toString());
-           res.cookie('avatar',encodedImageUrl);
+           res.cookie('refreshToken',refreshToken);
+           res.cookie('avatar',btoa(user.avatarurl.toString()));
            res.redirect(`http://localhost:4869`);
            return ;
          }
