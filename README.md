@@ -9,7 +9,7 @@
 
 ## Frontend of this prorject 
 
-<h6>https://github.com/Mhoanganh207/IMDb-FakeFE<h6>
+<h6>https://github.com/Mhoanganh207/MovieReviewFE<h6>
 
 ## Installation
 
