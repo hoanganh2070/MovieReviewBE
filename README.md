@@ -5,15 +5,13 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 
-<h1>Project is in the process of development</h1>
-
 ## Frontend of this prorject 
 
 <h6>https://github.com/Mhoanganh207/MovieReviewFE<h6>
 
 <header>
         <h1>Movie Review Website with NestJS</h1>
-        <p>Welcome to our Movie Review website built with NestJS!</p>
+        <p>Welcome to my Movie Review website built with NestJS!</p>
     </header>
     <section>
         <h2>Features</h2>
