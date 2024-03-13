@@ -48,6 +48,6 @@
             <li>Set up the database connection in <code>.env</code> file.</li>
             <li>Run the application:</li>
             <pre><code>npm run start:dev</code></pre>
-            <li>Visit <a href="http://localhost:3000">http://localhost:3000</a> in your browser to access the application.</li>
+            <li>Visit <a href="http://localhost:4000/swagger#/">http://localhost:4000/swagger#/</a> in your browser to see all the apis.</li>
         </ol>
     </section>
