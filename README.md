@@ -45,7 +45,7 @@
             <pre><code>cd MovieReviewBE</code></pre>
             <li>Install dependencies:</li>
             <pre><code>npm install</code></pre>
-            <li>Set up the database connection in <code>.env</code> file.</li>
+            <li>Set up the database connection in <code>config/postgres.config.ts</code> file.</li>
             <li>Run the application:</li>
             <pre><code>npm start</code></pre>
             <li>Visit <a href="http://localhost:4000/swagger#/">http://localhost:4000/swagger#/</a> in your browser to see all the apis.</li>
